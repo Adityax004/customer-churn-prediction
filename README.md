@@ -1,64 +1,84 @@
 # Customer Churn Prediction and Retention Analysis
 
-End-to-end data analytics and machine learning project for the Kaggle
-Telco Customer Churn dataset. The project simulates a real telecom
-retention problem: identify customers likely to discontinue service,
-explain the drivers of churn, and translate model results into targeted
-retention strategies.
+An end-to-end telecom analytics project focused on predicting customer churn,
+identifying the key drivers behind churn behavior, and translating insights
+into practical retention strategies.
 
-Dataset source: [Telco Customer Churn on Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+The project uses the Kaggle Telco Customer Churn dataset and follows a
+professional analytics workflow: business understanding, data quality
+assessment, preprocessing, exploratory analysis, feature engineering,
+classification modeling, model evaluation, dashboarding, and retention
+planning.
+
+**Dataset:** [Telco Customer Churn - Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+
+## Dashboard Preview
+
+![Power BI Dashboard Screenshot](dashboard/powerbi_dashboard_screenshot.png)
+
+The Power BI dashboard is designed to help business teams monitor churn KPIs,
+segment high-risk customers, understand churn drivers, and prioritize
+retention campaigns.
 
 ## Business Problem
 
-Telecom providers operate in a highly competitive market where acquiring a
-new customer is often more expensive than retaining an existing one. Churn
-creates revenue leakage, increases acquisition pressure, reduces customer
-lifetime value, and can signal weaknesses in pricing, service quality, or
-customer experience.
+Telecom companies operate in competitive markets where retaining existing
+customers is often more cost-effective than acquiring new ones. Customer churn
+leads to recurring revenue loss, higher acquisition pressure, lower customer
+lifetime value, and reduced profitability.
 
-The objective is to predict whether a customer is likely to churn and
-identify the factors most associated with churn risk.
+This project addresses the following business question:
 
-Business goals:
+> Which customers are most likely to churn, why are they at risk, and what
+> actions can the business take to retain them?
 
-- Detect high-risk customers before they cancel service.
-- Prioritize retention campaigns toward customers with the highest expected
-  value and churn risk.
-- Understand the impact of contract type, tenure, monthly charges, services,
-  payment method, and support-related add-ons.
-- Recommend practical retention actions by customer segment.
+## Objectives
 
-Key KPIs:
+- Predict whether a customer is likely to discontinue telecom services.
+- Identify customer, contract, service, and billing factors associated with
+  churn.
+- Compare classification models using business-relevant evaluation metrics.
+- Prioritize recall to reduce missed churners.
+- Build dashboard-ready outputs for customer risk segmentation.
+- Recommend targeted retention strategies by customer segment.
+
+## Key Performance Indicators
 
 - Overall churn rate
-- Recall for churn customers
-- ROC-AUC
-- Retention campaign target size
+- Churn rate by contract type, tenure group, payment method, and internet
+  service
+- Monthly recurring revenue at risk
 - High-risk customer count
-- Estimated monthly recurring revenue at risk
-- Churn rate by contract, tenure group, payment method, and service bundle
+- Model recall, precision, F1-score, and ROC-AUC
+- False negatives and false positives in business context
 
-Expected outcomes:
+## Project Workflow
 
-- Clean, reproducible analytics workflow.
-- EDA with business interpretation after each major visualization.
-- Classification models tuned with cross-validation.
-- Model comparison focused on recall and ROC-AUC.
-- Explainability outputs for feature importance and churn drivers.
-- Segment-wise retention recommendations.
+1. Business problem definition
+2. Data collection and dataset understanding
+3. Data quality assessment
+4. Data cleaning and preprocessing
+5. Exploratory data analysis
+6. Feature engineering
+7. Classification model training and tuning
+8. Model evaluation and comparison
+9. Feature importance analysis
+10. Retention strategy recommendations
+11. Dashboard design for business reporting
 
 ## Repository Structure
 
 ```text
 .
+|-- dashboard/
+|   |-- powerbi_dashboard_screenshot.png
+|   |-- powerbi_dashboard_spec.md
+|   |-- powerbi_measures.dax
+|   `-- streamlit_app.py
 |-- data/
 |   |-- raw/
 |   |-- cleaned/
 |   `-- README.md
-|-- dashboard/
-|   |-- powerbi_dashboard_spec.md
-|   |-- powerbi_measures.dax
-|   `-- streamlit_app.py
 |-- models/
 |-- notebooks/
 |   `-- customer_churn_prediction_and_retention_analysis.ipynb
@@ -68,17 +88,38 @@ Expected outcomes:
 |   |-- schema.sql
 |   `-- analysis_queries.sql
 |-- src/
+|   |-- build_sqlite.py
 |   |-- churn_data.py
 |   |-- churn_modeling.py
 |   |-- churn_visuals.py
 |   |-- download_kaggle_data.py
-|   |-- build_sqlite.py
 |   |-- paths.py
 |   `-- run_pipeline.py
 |-- visuals/
 |-- README.md
 `-- requirements.txt
 ```
+
+## Dataset
+
+The raw Kaggle dataset is not included in this repository. Download the file
+from Kaggle and place it here:
+
+```text
+data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv
+```
+
+The dataset contains customer demographics, account details, service
+subscriptions, billing information, tenure, and churn labels.
+
+Main feature groups:
+
+- Demographic: gender, senior citizen status, partner, dependents
+- Service-related: phone service, internet service, online security, backup,
+  protection, tech support, streaming services
+- Account-related: tenure, contract, billing method, payment method, monthly
+  charges, total charges
+- Target: churn status
 
 ## Setup
 
@@ -88,31 +129,19 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Data
-
-This repo does not redistribute Kaggle data. Download the dataset and place
-the CSV here:
-
-```text
-data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv
-```
-
-With Kaggle API credentials configured, you can also run:
+With Kaggle API credentials configured, the dataset can be downloaded using:
 
 ```powershell
 python src/download_kaggle_data.py
 ```
 
-## Run the Project
-
-Run the full preprocessing, EDA, modeling, reporting, and SQLite export
-pipeline:
+## Run the Pipeline
 
 ```powershell
 python src/run_pipeline.py
 ```
 
-Useful options:
+Optional commands:
 
 ```powershell
 python src/run_pipeline.py --skip-models
@@ -120,40 +149,67 @@ python src/run_pipeline.py --skip-visuals
 python src/run_pipeline.py --raw-csv data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
 
-Generated outputs:
+Pipeline outputs:
 
 - `data/cleaned/telco_churn_processed.csv`
+- `data/telco_churn.sqlite`
 - `reports/model_metrics.csv`
 - `reports/test_set_predictions.csv`
 - `reports/feature_importance.csv`
 - `reports/eda_business_insights.md`
 - `models/best_churn_model.joblib`
 - `visuals/*.png`
-- `data/telco_churn.sqlite`
 
-## Notebook Workflow
+## Notebook
 
-Open the main notebook:
+Main notebook:
 
 ```text
 notebooks/customer_churn_prediction_and_retention_analysis.ipynb
 ```
 
-The notebook covers:
+Notebook sections include:
 
-- Business objective, KPIs, and impact of churn
+- Business objective and KPIs
 - Dataset overview and data quality checks
-- Missing value handling and datatype fixes
-- Label encoding, one-hot encoding, scaling, and class imbalance handling
-- EDA with churn interpretations
+- Missing value handling and datatype conversion
+- Categorical encoding and numerical scaling
+- Class imbalance handling
+- Exploratory data analysis with business interpretation
 - Feature engineering
-- Logistic Regression, Decision Tree, Random Forest, and optional XGBoost
-- Hyperparameter tuning with `GridSearchCV`
-- Accuracy, precision, recall, F1-score, ROC-AUC, confusion matrix, and ROC curves
-- Feature importance, Logistic Regression coefficients, and optional SHAP workflow
-- Retention strategy recommendations
+- Logistic Regression, Decision Tree, Random Forest, and XGBoost
+- Hyperparameter tuning with cross-validation
+- Accuracy, precision, recall, F1-score, ROC-AUC, and confusion matrix
+- Feature importance and churn driver analysis
+- Segment-wise retention recommendations
+
+## Modeling Approach
+
+The modeling workflow is designed around churn prevention rather than raw
+accuracy alone.
+
+Key steps:
+
+- Convert `TotalCharges` to numeric and repair blank values for zero-tenure
+  customers.
+- Remove duplicate and invalid customer records.
+- Encode categorical variables.
+- Standardize numerical features.
+- Address class imbalance with class weighting.
+- Tune models using stratified cross-validation.
+- Select the best model using recall first and ROC-AUC second.
+
+Recall is especially important because a false negative means the business
+misses a customer who is likely to churn. False positives still create campaign
+cost, but the cost is usually lower than losing a customer completely.
 
 ## Dashboard
+
+Power BI dashboard materials:
+
+- Dashboard preview: `dashboard/powerbi_dashboard_screenshot.png`
+- Dashboard build guide: `dashboard/powerbi_dashboard_spec.md`
+- DAX measures: `dashboard/powerbi_measures.dax`
 
 Streamlit dashboard:
 
@@ -161,40 +217,43 @@ Streamlit dashboard:
 streamlit run dashboard/streamlit_app.py
 ```
 
-Power BI implementation guidance is documented in
-`dashboard/powerbi_dashboard_spec.md`, with starter DAX measures in
-`dashboard/powerbi_measures.dax`.
-
-Dashboard pages include:
+Dashboard pages and views:
 
 - Churn overview KPIs
-- Churn risk segmentation
-- Customer demographics
-- Contract, billing, and service analysis
+- Customer risk segmentation
+- Revenue at risk analysis
+- Contract, billing, tenure, and service analysis
 - Feature importance and model prediction insights
+- Retention strategy planning
 
-## Modeling Approach
+## Retention Recommendations
 
-The pipeline uses a business-first classification workflow:
+Recommended business actions include:
 
-- `TotalCharges` is converted to numeric and blank records are repaired where
-  tenure indicates a zero-charge customer.
-- Categorical features are one-hot encoded.
-- The churn label is label encoded.
-- Numerical variables are standardized.
-- Class imbalance is addressed with class weighting by default.
-- Models are tuned with stratified cross-validation.
-- The best model is selected by recall first and ROC-AUC second.
+- Personalized retention campaigns for high-risk customers
+- Long-term contract incentives for month-to-month customers
+- Billing support and plan-fit reviews for high monthly charge customers
+- Onboarding improvements for new customers
+- Support-focused outreach for senior citizens
+- Security and tech support bundles for customers without protective services
+- Monthly churn-risk monitoring for customer success teams
 
-Recall is emphasized because missing a likely churner can mean losing a
-customer entirely. False positives still have a cost, but they can often be
-managed through lower-cost offers, loyalty messages, or service outreach.
+## Tech Stack
 
-## Resume-Ready Summary
+- Python
+- Pandas and NumPy
+- Matplotlib and Seaborn
+- Scikit-learn
+- XGBoost
+- SHAP
+- SQL and SQLite
+- Streamlit
+- Power BI
 
-Built an end-to-end telecom churn analytics project using Python, Pandas,
-Seaborn, Scikit-learn, optional XGBoost/SHAP, SQL, and Streamlit/Power BI.
-Cleaned and engineered Telco customer data, analyzed churn drivers, trained
-and tuned classification models, evaluated recall and ROC-AUC, explained
-feature importance, and designed actionable retention strategies for
-high-risk customer segments.
+## Portfolio Summary
+
+Built a complete telecom churn analytics project using Python, SQL, predictive
+modeling, and dashboard reporting. The project includes data cleaning, feature
+engineering, exploratory analysis, model tuning, churn driver interpretation,
+customer risk segmentation, and retention strategy recommendations for a
+business-facing analytics use case.
