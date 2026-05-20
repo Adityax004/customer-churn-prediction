@@ -1,0 +1,68 @@
+Total Customers =
+COUNTROWS ( customers )
+
+Churned Customers =
+CALCULATE (
+    [Total Customers],
+    customers[Churn] = "Yes"
+)
+
+Churn Rate =
+DIVIDE ( [Churned Customers], [Total Customers] )
+
+Retained Customers =
+CALCULATE (
+    [Total Customers],
+    customers[Churn] = "No"
+)
+
+Monthly Recurring Revenue =
+SUM ( customers[MonthlyCharges] )
+
+Revenue At Risk =
+CALCULATE (
+    SUM ( customers[MonthlyCharges] ),
+    customers[Churn] = "Yes"
+)
+
+Average Monthly Charges =
+AVERAGE ( customers[MonthlyCharges] )
+
+Average Tenure =
+AVERAGE ( customers[tenure] )
+
+High Value Customers =
+CALCULATE (
+    [Total Customers],
+    customers[high_value_customer_flag] = "Yes"
+)
+
+High Value Churn Rate =
+DIVIDE (
+    CALCULATE ( [Churned Customers], customers[high_value_customer_flag] = "Yes" ),
+    [High Value Customers]
+)
+
+Month To Month Churn Rate =
+DIVIDE (
+    CALCULATE ( [Churned Customers], customers[Contract] = "Month-to-month" ),
+    CALCULATE ( [Total Customers], customers[Contract] = "Month-to-month" )
+)
+
+Model Recall =
+MAX ( model_metrics[recall] )
+
+Model ROC AUC =
+MAX ( model_metrics[roc_auc] )
+
+Predicted High Risk Customers =
+CALCULATE (
+    COUNTROWS ( test_set_predictions ),
+    test_set_predictions[churn_probability] >= 0.6
+)
+
+Predicted Revenue At Risk =
+CALCULATE (
+    SUM ( test_set_predictions[MonthlyCharges] ),
+    test_set_predictions[churn_probability] >= 0.6
+)

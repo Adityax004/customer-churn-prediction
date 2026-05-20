@@ -1,0 +1,24 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Kaggle datasets and generated artifacts
+data/raw/*.csv
+data/raw/*.zip
+data/cleaned/*.csv
+data/*.sqlite
+visuals/*.png
+dashboard/*.pbix
+models/*.joblib
+models/*.pkl
+reports/*.csv
+reports/*.json
+reports/*.png
+
+!data/raw/.gitkeep
+!data/cleaned/.gitkeep
+!visuals/.gitkeep
+!models/.gitkeep
+!reports/.gitkeep
